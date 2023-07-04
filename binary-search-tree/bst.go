@@ -174,27 +174,22 @@ func (t *Tree) Print() {
 	for len(nodes) > currentIdx {
 		current = nodes[currentIdx]
 		currentIdx++
+
 		if current == nil {
-			continue
-		}
-		if current.left != nil {
-			nodes = append(nodes, current.left)
-		}
-
-		if current.right != nil {
-			nodes = append(nodes, current.right)
-		}
-
-		if current.parent == nil || current.parent.right == current {
-			nodes = append(nodes, nil)
-		}
-	}
-
-	for i := 0; i < len(nodes); i++ {
-		if nodes[i] == nil {
 			fmt.Println()
+			if currentIdx == len(nodes) {
+				break
+			}
+			nodes = append(nodes, nil)
 		} else {
-			fmt.Print(nodes[i].key, "        ")
+			fmt.Print(current.key, "\t")
+			if current.left != nil {
+				nodes = append(nodes, current.left)
+			}
+
+			if current.right != nil {
+				nodes = append(nodes, current.right)
+			}
 		}
 	}
 }
