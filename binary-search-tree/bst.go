@@ -63,17 +63,17 @@ func (t *Tree) Maximum() int {
 	return max(t.root)
 }
 
-func min(node *Node) int {
+func min(node *Node) *Node {
 	current := node
 	for current.left != nil {
 		current = current.left
 	}
 
-	return current.key
+	return current
 }
 
 func (t *Tree) Minimum() int {
-	return min(t.root)
+	return min(t.root).key
 }
 
 func (t *Tree) Search(needle int) *Node {
@@ -93,7 +93,7 @@ func (t *Tree) Successor(target int) (int, error) {
 	node := t.Search(target)
 
 	if node.right != nil {
-		return min(node.right), nil
+		return min(node.right).key, nil
 	}
 
 	current := node
@@ -127,4 +127,74 @@ func (t *Tree) Predecessor(target int) int {
 	}
 
 	return currentParent.key
+}
+
+func (t *Tree) transplant(dest *Node, src *Node) {
+	if dest.parent == nil {
+		t.root = src
+	} else if dest == dest.parent.left {
+		dest.parent.left = src
+	} else {
+		dest.parent.right = src
+	}
+
+	if src != nil {
+		src.parent = dest.parent
+	}
+}
+
+func (t *Tree) Delete(target int) {
+	node := t.Search(target)
+
+	if node.left == nil {
+		t.transplant(node, node.right)
+	} else if node.right == nil {
+		t.transplant(node, node.left)
+	} else {
+		successor := min(node.right)
+		if successor.parent != node {
+			t.transplant(successor, successor.right)
+			successor.right = node.right
+			successor.right.parent = successor
+		}
+		t.transplant(node, successor)
+		successor.left = node.left
+		successor.left.parent = successor
+	}
+}
+
+func (t *Tree) Print() {
+	var nodes []*Node
+	nodes = append(nodes, t.root)
+	nodes = append(nodes, nil)
+
+	var current *Node
+	var currentIdx = 0
+
+	for len(nodes) > currentIdx {
+		current = nodes[currentIdx]
+		currentIdx++
+		if current == nil {
+			continue
+		}
+		if current.left != nil {
+			nodes = append(nodes, current.left)
+		}
+
+		if current.right != nil {
+			nodes = append(nodes, current.right)
+		}
+
+		if current.parent == nil || current.parent.right == current {
+			nodes = append(nodes, nil)
+		}
+	}
+
+	for i := 0; i < len(nodes); i++ {
+		if nodes[i] == nil {
+			fmt.Println()
+		} else {
+			fmt.Print(nodes[i].key, "        ")
+		}
+	}
 }

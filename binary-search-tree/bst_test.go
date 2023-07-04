@@ -74,6 +74,19 @@ func TestSearch(t *testing.T) {
 	}
 }
 
+func TestDelete(t *testing.T) {
+	tree := GetTree()
+
+	tree.Print()
+	tree.Delete(15)
+	result := tree.Search(18)
+	if result.left.key != 17 {
+		t.Errorf("Expected the new child to be 17, got node %v", result.left)
+	}
+
+	tree.Print()
+}
+
 func TestSuccessor(t *testing.T) {
 	tree := GetTree()
 	result, e := tree.Successor(12)
