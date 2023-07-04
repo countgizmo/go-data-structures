@@ -99,7 +99,7 @@ func (t *Tree) Successor(target int) (int, error) {
 	current := node
 	currentParent := node.parent
 
-	for currentParent != nil && current.key == currentParent.right.key {
+	for currentParent != nil && current == currentParent.right {
 		current = currentParent
 		currentParent = currentParent.parent
 	}
@@ -121,7 +121,7 @@ func (t *Tree) Predecessor(target int) int {
 	current := node
 	currentParent := current.parent
 
-	for currentParent != nil && current.key == currentParent.left.key {
+	for currentParent != nil && current == currentParent.left {
 		current = currentParent
 		currentParent = currentParent.parent
 	}
